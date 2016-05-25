@@ -1,28 +1,31 @@
 #include "object.h"
 
 
-#include "rapidjson/document.h"
-#include "rapidjson/rapidjson.h"
+//#include "rapidjson/document.h"
+//#include "rapidjson/rapidjson.h"
+#include "json.hpp"
 #include <iostream>
 #include <sstream>
 #include "exception.h"
 
 #include <cstdio>
 
-using rapidjson::Document;
-using rapidjson::Value;
+//using rapidjson::Document;
+//using rapidjson::Value;
 
 //using rapidjson::StringBuffer;
 //using rapidjson::PrettyWriter;
 //using rapidjson::Writer;
+using namespace nlohmann;
+ 
 namespace jwt {
 
 
-bool Object::has(const char *key) {
+bool Object::has(const std::string &key) {
     return this->m_map.count(key) > 0;
 }
 
-Any &Object::get(const char *key) {
+Any &Object::get(const std::string &key) {
     return m_map[key];
 }
 
@@ -45,8 +48,8 @@ std::string Object::encode()  {
       stream << (second.as<bool>() ? "true" : "false");
     } else if (second.is<int>()) {
       stream << second.as<int>();
-    } else if (second.is<uint>()) {
-      stream << second.as<uint>();
+    } else if (second.is<unsigned int>()) {
+      stream << second.as<unsigned int>();
     } else if (second.is<double>()) {
       stream << second.as<double>();
     } else if (second.is<Object>()) {
@@ -63,9 +66,31 @@ std::string Object::encode()  {
   return stream.str();
 }
 
-Object Object::decode(const string &value)
+std::unique_ptr<Object> Object::decode(const string &value)
 {
-    Document doc;
+    auto j = json::parse(value);
+    auto root = new Object();
+
+    for (json::iterator it = j.begin() ; it != j.end(); it++) {
+      auto value = it.value();
+      if (value.is_string()) {
+        //std::cout << it.key() << std::endl;
+        //root[it.key()] = value.get<std::string>();
+        //root->set(it.key(), value.get<std::string>());
+      } /*else if (value.is_number_float()) {
+          root->set(it.key(), value.get<double>());
+      } else if (value.is_number_unsigned()) {
+          root->set(it.key(), value.get<unsigned int>());
+      } else if (value.is_number_integer()) {
+          root->set(it.key(), value.get<int>());
+      } else if (value.is_boolean()) {
+          root->set(it.key(), value.get<bool>());
+      }*/
+
+
+
+    }
+    /*Document doc;
     doc.Parse(value.c_str());
 
     if (!doc.IsObject()) {
@@ -93,9 +118,9 @@ Object Object::decode(const string &value)
           //  }
         }
 
-    }
+    }*/
 
-    return root;
+    return std::unique_ptr<Object>(root);
 }
 
 

@@ -5,7 +5,6 @@
 #include <sstream>
 #include "base64.h"
 
-using std::stringstream;
 
 namespace jwt {
 
@@ -18,7 +17,7 @@ namespace jwt {
         stream << ".";
         write_body(stream);
 
-        std::string out = m_signer->sign(stream.str().c_str());
+        std::string out = m_signer->sign(stream.str());
         //auto o = base64_encode(reinterpret_cast<unsigned char *>(&*out.begin()), out.length());
         //base64uri_encode(o);
 
@@ -36,20 +35,28 @@ namespace jwt {
     }
 
     void Token::write_body(std::stringstream &stream) {
-        string out = this->claims()->encode();
-        auto o = base64_encode(reinterpret_cast<unsigned char *>(&*out.begin()), out.length());
+        string out("{}");
+        if (!this->m_claims.empty()) {
+            out = this->m_claims.dump();
+            std::cout << "OUT " << out << std::endl;
+        }
+
+
+        auto o = base64_encode(reinterpret_cast<const unsigned char *>(&*out.begin()), out.length());
         base64uri_encode(o);
         stream << o;
     }
 
 
     std::string decode_segment(const std::string &payload, int start, int end) {
-        auto bbody = payload.substr(start, end);
-        base64uri_decode(bbody);
+       auto bbody = payload.substr(start, end);
+       base64uri_decode(bbody);
        return base64_decode(bbody);
     }
 
-    Token &decode(Strategy *s, const std::string &payload) {
+    std::unique_ptr<Token> decode(Strategy *s, const std::string &payload) {
+
+        Token *token = new Token(s);
 
         auto len = payload.length();
         int i = 0;
@@ -71,13 +78,16 @@ namespace jwt {
             }
         }
 
-        auto ho = Object::decode(header);
-        auto cl = Object::decode(body);
-        //std::cout << ho.encode() << std::endl;
-        //std::cout << cl.encode() << std::endl;
-        //std::cout << ho.get("alg").as<string>()<< "\n" << body << std::endl;
-        //std::cout << payload.substr(i, len) << std::endl;
-        std::cout << s->verify(payload) << std::endl;
+        auto ho = json::parse(header);
+        auto cl = json::parse(body);
+
+        if (!s->verify(payload)) {
+            throw Exception("could not be verified");
+        }
+
+        token->m_claims = cl;
+
+        return std::unique_ptr<Token>(token);
     }
 
 }

@@ -4,7 +4,7 @@
 #include <string>
 #include <type_traits>
 #include "any.h"
-
+#include <memory>
 #define REQUIRES(...) typename std::enable_if<(__VA_ARGS__), int>::type = 0
 
 namespace jwt {
@@ -14,7 +14,7 @@ class Object;
 template<class T>
 struct is_incrementable
         : std::integral_constant<bool, (
-        std::is_same<T, uint>() ||
+        std::is_same<T, unsigned int>() ||
         std::is_same<T, int>() ||
         std::is_same<T, bool>() ||
         std::is_same<T, double>() ||
@@ -27,27 +27,29 @@ class Object {
 
 
 public:
-    void set(const char *key, const char *value) {
+    //Object () {}
+
+    void set(const std::string &key, const char *value) {
         m_map[key] = value;
     }
 
     template<class T, REQUIRES(is_incrementable<T>())>
-    void set(const char *key, const T& value) {
+    void set(const std::string &key, const T& value) {
         m_map[key] = value;
     }
 
     template<class T, REQUIRES(is_incrementable<T>())>
-    void set(const char *key, T& value) {
+    void set(const std::string &key, T& value) {
         m_map[key] = value;
     }
 
 
-    bool has(const char *key);
+    bool has(const std::string &key);
 
-    Any &get(const char *key);
+    Any &get(const std::string &key);
 
     template<class T>
-    bool is(const char *key) {
+    bool is(const std::string &key) {
         if (!has(key)) return false;
         return m_map[key].is<T>();
     }
@@ -55,13 +57,13 @@ public:
 
     string encode();
 
-    static Object decode(const std::string &value);
+    static std::unique_ptr<Object> decode(const std::string &value);
 
 
 
 
 protected:
-    std::map<const char *, Any> m_map;
+    std::map<std::string, Any> m_map;
 
 };
 

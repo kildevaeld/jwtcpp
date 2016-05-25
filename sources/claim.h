@@ -3,10 +3,12 @@
 
 #include <map>
 #include <string>
-#include "object.h"
+//#include "json.h"
+
+
 namespace jwt {
 
-    typedef Object ClaimSet;
+    //typedef Object ClaimSet;
     
     /*class ClaimSet: public Object {
       

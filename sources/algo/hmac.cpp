@@ -14,7 +14,7 @@ namespace jwt {
 
 
 
-std::string Hmac::sign(const char *str) {
+std::string Hmac::sign(const std::string &str) {
     unsigned char res[key.length()];
     unsigned int res_len;
 
@@ -32,13 +32,13 @@ std::string Hmac::sign(const char *str) {
         throw Exception("none");
     }
 
-    HMAC(alg, key.data(), key.length(),
-         (const unsigned char *)str, strlen(str), res, &res_len);
+    auto ret = HMAC(alg, key.data(), key.length(),
+         reinterpret_cast<const unsigned char *>(str.data()), str.length(), res, &res_len);
 
-    std::string out = base64_encode(res, res_len);
+    std::string out = base64_encode(ret, res_len);
     base64uri_encode(out);
 
-    return std::move(out);
+    return out;
 }
 
 bool Hmac::verify(const std::string &payload) {
@@ -57,8 +57,7 @@ bool Hmac::verify(const std::string &payload) {
         }
     }
 
-    auto pp = payload.substr(0, i-1);
-    return this->sign(pp.c_str()) == payload.substr(i);
+    return this->sign(payload.substr(0, i-1)) == payload.substr(i);
 }
 
 

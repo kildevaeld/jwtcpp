@@ -7,10 +7,12 @@ using jwt::Token;
 using jwt::Hmac;
 int main () {
 
-    Token j(new Hmac(jwt::sha256, "noegle"));
+    Token j(new Hmac(jwt::sha256, "nogle"));
 
-    auto c = j.claims();
-    c->set("sub", std::string("123303"));
+    j.set_claim("age", 32);
+    j.set_claim("hello", "world");
+    //auto c = j.claims();
+    /*c->set("sub", std::string("123303"));
     c->set("age", 32);
     c->set("hello",3.2);
     c->set("Hello", "hello");
@@ -18,10 +20,12 @@ int main () {
     o.set("name", "Rasmus Kildevæld");
     o.set("age", 32);
     o.set("Hello", false);
-    c->set("person", o);
+    c->set("person", o);*/
+    //c["age"] = 32;
+    //c["hello"] = "Hello";
 
 
-    std::cout << c->encode() << std::endl;
+    //std::cout << c.dump() << std::endl;
 
 
     //std::cout << c->get<std::string>("sub") << std::endl;
@@ -30,8 +34,8 @@ int main () {
 
     std::cout << "Token: " << payload << std::endl;
 
-    jwt::decode(new Hmac(jwt::sha256, "noegle"), payload);
+    auto js = jwt::decode(new Hmac(jwt::sha256, "nogle"), payload);
 
-
+    std::cout << "\n" << js->get_claim<int>("age") << std::endl;
 
 }

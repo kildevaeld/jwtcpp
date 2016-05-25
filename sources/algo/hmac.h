@@ -70,7 +70,7 @@ public:
 
     // Strategy interface
 public:
-    std::string sign(const char *str);
+    std::string sign(const std::string &str);
     virtual bool verify(const std::string &payload);
 
 private:

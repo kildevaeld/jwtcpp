@@ -28,18 +28,20 @@ else()
     # Error; with REQUIRED, pkg_search_module() will throw an error by it's own
 endif()
 
-
-option(RAPIDJSON_BUILD_DOC "" OFF)
-option(RAPIDJSON_BUILD_EXAMPLES "" OFF)
-option(RAPIDJSON_BUILD_TESTS "" OFF)
-add_subdirectory(vendor/rapidjson)
+#option(BuildTests "" OFF)
+#option(RAPIDJSON_BUILD_DOC "" OFF)
+#option(RAPIDJSON_BUILD_EXAMPLES "" OFF)
+#option(RAPIDJSON_BUILD_TESTS "" OFF)
+#add_subdirectory(vendor/rapidjson)
+add_subdirectory(vendor/json)
 
 add_subdirectory(example)
 
 
-include_directories(vendor/rapidjson/include/)
+#include_directories(vendor/rapidjson/include/)
+include_directories(vendor/json/src/)
 
-set(LIBS ${LIBS} ${OPENSSL_LIBRARIES})
+set(LIBS ${LIBS} ${OPENSSL_LIBRARIES} )
 
 FILE(GLOB_RECURSE SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/sources/*.cpp)
 FILE(GLOB_RECURSE HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/sources/*.h)
