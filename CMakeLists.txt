@@ -29,16 +29,10 @@ else()
 endif()
 
 option(BuildTests "" OFF)
-#option(RAPIDJSON_BUILD_DOC "" OFF)
-#option(RAPIDJSON_BUILD_EXAMPLES "" OFF)
-#option(RAPIDJSON_BUILD_TESTS "" OFF)
-#add_subdirectory(vendor/rapidjson)
 add_subdirectory(vendor/json)
-
 add_subdirectory(example)
 
 
-#include_directories(vendor/rapidjson/include/)
 include_directories(vendor/json/src/)
 
 set(LIBS ${LIBS} ${OPENSSL_LIBRARIES} )

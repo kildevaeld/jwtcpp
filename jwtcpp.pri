@@ -20,7 +20,6 @@ INCLUDEPATH += /usr/local/include
 PKGCONFIG += openssl
 
 
-
 SOURCES = $$PWD/sources/jwt.cpp \
 	$$PWD/sources/base64.cpp \
 	$$PWD/sources/algo/hmac.cpp
