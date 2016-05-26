@@ -7,7 +7,7 @@ DEFINES += JWTCPP_LIBRARY
 
 SOURCES = sources/jwt.cpp \
 	sources/base64.cpp \
-	sources/algo/algo.cpp
+	
 	sources/algo/hmac.cpp
 
 HEADERS = sources/jwt.h \

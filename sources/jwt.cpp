@@ -9,7 +9,7 @@
 namespace jwt {
 
 
-    string Token::encode() {
+    const string Token::encode() const {
 
         stringstream stream;
 
@@ -26,7 +26,7 @@ namespace jwt {
     }
 
 
-    void Token::write_header(std::stringstream &stream)
+    void Token::write_header(std::stringstream &stream) const
     {
         string out = "{\"typ\":\"JWT\",\"alg\":\"" + std::string(m_signer->name()) + "\"}";
         auto o = base64_encode(reinterpret_cast<unsigned char *>(&*out.begin()), out.length());
@@ -34,7 +34,7 @@ namespace jwt {
         stream << o;
     }
 
-    void Token::write_body(std::stringstream &stream) {
+    void Token::write_body(std::stringstream &stream) const {
         string out("{}");
         if (!this->m_claims.empty()) {
             out = this->m_claims.dump();
@@ -59,7 +59,7 @@ namespace jwt {
         Token *token = new Token(s);
 
         auto len = payload.length();
-        int i = 0;
+        unsigned long i = 0;
 
         int hi = 0;
 

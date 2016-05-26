@@ -3,13 +3,9 @@
 
 #include <exception>
 #include <string>
-//#include "claim.h"
 #include "algo/algo.h"
-//#include "algo/hmac.h"
 #include "exception.h"
-
 #include <iostream>
-
 #include "../vendor/json/src/json.hpp"
 
 using std::stringstream;
@@ -28,7 +24,7 @@ namespace jwt {
             delete m_signer;
         }
 
-        std::string encode();
+        const std::string encode() const;
 
         template<class T>
         void set_claim(const std::string &key, T claim) {
@@ -36,8 +32,8 @@ namespace jwt {
         }
 
         template<class T>
-        T get_claim(const std::string &key) {
-            return m_claims[key];
+        const T get_claim(const std::string &key) const {
+            return m_claims[key].get<T>();
         }
 
 	private:
@@ -45,8 +41,8 @@ namespace jwt {
         //ClaimSet m_claims;
         Strategy *m_signer;
 
-        void write_header(stringstream &stream);
-        void write_body(stringstream &stream);
+        void write_header(stringstream &stream) const;
+        void write_body(stringstream &stream) const;
 
         friend std::unique_ptr<Token> decode(Strategy *s, const string &payload);
 	};

@@ -13,9 +13,6 @@ public:
     virtual bool verify(const std::string &) = 0;
 };
 
-
-
-
 }
 
 #endif

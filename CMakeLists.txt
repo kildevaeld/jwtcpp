@@ -28,7 +28,7 @@ else()
     # Error; with REQUIRED, pkg_search_module() will throw an error by it's own
 endif()
 
-#option(BuildTests "" OFF)
+option(BuildTests "" OFF)
 #option(RAPIDJSON_BUILD_DOC "" OFF)
 #option(RAPIDJSON_BUILD_EXAMPLES "" OFF)
 #option(RAPIDJSON_BUILD_TESTS "" OFF)
